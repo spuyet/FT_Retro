@@ -1,6 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 
+#define WIDTH	(120)
+#define	HEIGHT	(30)
+
 #include "IGameState.hpp"
 #include "Ship.hpp"
 

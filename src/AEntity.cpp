@@ -84,9 +84,9 @@ AEntity::update()
 }
 
 void
-AEntity::render() const
+AEntity::render(int x, int y) const
 {
-	move(_y + 1, _x + 1);
+	move(_y + y + 1, _x + x + 2);
 	attrset(getAttr());
 	addch(getCh());
 }

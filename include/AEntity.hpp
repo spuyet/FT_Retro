@@ -20,7 +20,7 @@ public:
 	virtual int		getAttr() const = 0;
 	virtual int		getCh() const = 0;
 	virtual void	update();
-	virtual void	render() const;
+	virtual void	render(int x, int y) const;
 
 	virtual ~AEntity();
 
