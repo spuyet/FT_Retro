@@ -1,6 +1,7 @@
 #include <cstring>
 #include <ncurses.h>
 #include "MainMenu.hpp"
+#include "Game.hpp"
 #include "Core.hpp"
 
 MainMenu::MainMenu()
@@ -88,7 +89,7 @@ void
 MainMenu::action()
 {
 	if (_select == 0)
-		/* launch game */;
+		Core::get().switchState(new Game);
 	else
 		Core::get().quit();
 }
