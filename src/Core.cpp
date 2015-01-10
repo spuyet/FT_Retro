@@ -27,7 +27,7 @@ Core::Core()
 void
 Core::run()
 {
-	const int timePerFrame = 1000000 / 20;
+	const int timePerFrame = 1000000 / 60;
 	if (_state == 0)
 		return;
 	_running = true;
