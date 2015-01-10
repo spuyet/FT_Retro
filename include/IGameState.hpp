@@ -6,9 +6,9 @@ class IGameState
 
 public:
 
-	virtual handleEvent(int ch) = 0;
-	virtual update() = 0;
-	virtual render() const = 0;
+	virtual void	handleEvent(int ch) = 0;
+	virtual void	update() = 0;
+	virtual void	render() const = 0;
 
 	virtual ~IGameState(){};
 
