@@ -1,6 +1,11 @@
 #ifndef CORE_H
 #define CORE_H
 
+#include <ncurses.h>
+
+#define COLOR(fg, bg)	(((fg) << 3) + (bg) + 1)
+#define COLOR_P(fg, bg)	(COLOR_PAIR(COLOR(fg, bg)))
+
 class IGameState;
 
 class Core

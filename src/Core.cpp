@@ -9,17 +9,25 @@ Core::Core()
 , _state(0)
 {
 	initscr();
+	cbreak();
 	noecho();
-	nodelay(stdscr, true);
+	nodelay(stdscr, TRUE);
 	curs_set(0);
+	keypad(stdscr, TRUE);
 	ESCDELAY = 5;
+	start_color();
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+			init_pair(COLOR(i, j), i, j);
+	}
 	_coreSingleton = this;
 }
 
 void
 Core::run()
 {
-	const float timePerFrame = 1.0f / 60.0f;
+	const int timePerFrame = 1000000 / 20;
 	if (_state == 0)
 		return;
 	_running = true;
@@ -30,9 +38,12 @@ Core::run()
 		while ((ch = getch()) != ERR)
 			_state->handleEvent(ch);
 		_state->update();
+		erase();
 		_state->render();
+		refresh();
 		clock_t after = clock();
-		float elapsed = static_cast<float>(after - before) / CLOCKS_PER_SEC;
+		int elapsed = after - before;
+		mvprintw(0, 0, ""); // Dummy write to update buffer.
 		if (elapsed < timePerFrame)
 			usleep(timePerFrame - elapsed);
 	}
