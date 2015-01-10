@@ -2,7 +2,7 @@
 
 CXX := g++
 
-CXXFLAGS := -c -Wall -Wextra -Werror -I include
+CXXFLAGS := -c -Wall -Wextra -Werror -g3 -I include
 
 FILES := $(shell find src -name '*.cpp')
 

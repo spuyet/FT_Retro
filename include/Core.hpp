@@ -11,9 +11,11 @@ public:
 
 	void	run();
 	void	quit();
-	void	switchState(IGameState* _state);
+	void	switchState(IGameState* state);
 
 	~Core();
+
+	static Core&	get();
 
 private:
 
@@ -22,6 +24,7 @@ private:
 
 	bool			_running;
 	IGameState*		_state;
+	static Core*	_coreSingleton;
 
 };
 
