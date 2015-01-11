@@ -11,12 +11,14 @@ public:
 	AEntity(const AEntity& rhs);
 	AEntity& operator=(const AEntity& rhs);
 
-	float			getX() const;
-	float			getY() const;
+	int				getX() const;
+	int				getY() const;
 	float			getSpeedX() const;
 	float			getSpeedY() const;
+	int				getTeam() const;
 	void			setPos(float x, float y);
 	void			setSpeed(float x, float y);
+	void			setTeam(int team);
 	virtual int		getAttr() const = 0;
 	virtual int		getCh() const = 0;
 	virtual void	update();
@@ -30,6 +32,7 @@ protected:
 	float	_y;
 	float	_speedX;
 	float	_speedY;
+	int		_team;
 };
 
 #endif

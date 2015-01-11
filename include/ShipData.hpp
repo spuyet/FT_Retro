@@ -3,6 +3,14 @@
 
 struct ShipData
 {
+	ShipData();
+	ShipData(int ch, int attr, float speed);
+	ShipData(const ShipData&);
+
+	ShipData& operator=(const ShipData&);
+
+	~ShipData();
+
 	int		ch;
 	int		attr;
 	float	speed;

@@ -3,12 +3,15 @@
 #include "Core.hpp"
 
 Ship::Ship()
+: AEntity()
+, _index(0)
 {
 
 }
 
-Ship::Ship(float x, float y)
+Ship::Ship(int index, float x, float y)
 : AEntity(x, y)
+, _index(index)
 {
 
 }
@@ -32,16 +35,21 @@ Ship::operator=(const Ship& rhs)
 int
 Ship::getAttr() const
 {
-	return A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK);
+	return _ships[_index].attr;
 }
 
 int
 Ship::getCh() const
 {
-	return '>';
+	return _ships[_index].ch;
 }
 
 Ship::~Ship()
 {
 
 }
+
+ShipData	Ship::_ships[2] = {
+	ShipData('>', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 1.0f),
+	ShipData('<', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 1.0f)
+};

@@ -64,8 +64,8 @@ Core::switchState(IGameState* state)
 
 Core::~Core()
 {
-	endwin();
 	delete _state;
+	endwin();
 }
 
 Core&

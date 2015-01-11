@@ -21,6 +21,10 @@ public:
 	void		move(int x, int y);
 	void		shoot();
 	AEntity*	spawn(AEntity* entity);
+	void		destroy(int i);
+	void		gameOver();
+	void		wave();
+	void		spawnFoe();
 	void		update();
 	void		render() const;
 
@@ -35,7 +39,9 @@ private:
 	AEntity*	_entities[MAX_ENT];
 	int			_mvCooldown;
 	int			_shootCooldown;
-
+	bool		_over;
+	int			_difficulty;
+	int			_nextWave;
 };
 
 #endif
