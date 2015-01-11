@@ -8,6 +8,8 @@ AEntity::AEntity()
 , _speedX(0)
 , _speedY(0)
 , _team(0)
+, _acc(0)
+, _state(0)
 {
 
 }
@@ -18,6 +20,8 @@ AEntity::AEntity(float x, float y)
 , _speedX(0)
 , _speedY(0)
 , _team(0)
+, _acc(0)
+, _state(0)
 {
 
 }
@@ -28,6 +32,8 @@ AEntity::AEntity(const AEntity& rhs)
 , _speedX(rhs._speedX)
 , _speedY(rhs._speedY)
 , _team(rhs._team)
+, _acc(rhs._acc)
+, _state(rhs._state)
 {
 
 }
@@ -40,6 +46,8 @@ AEntity::operator=(const AEntity& rhs)
 	_speedX = rhs._speedX;
 	_speedY = rhs._speedY;
 	_team = rhs._team;
+	_acc = rhs._acc;
+	_state = rhs._state;
 	return *this;
 }
 
@@ -73,6 +81,18 @@ AEntity::getTeam() const
 	return _team;
 }
 
+int
+AEntity::getAcc() const
+{
+	return _acc;
+}
+
+int
+AEntity::getState() const
+{
+	return _state;
+}
+
 void
 AEntity::setPos(float x, float y)
 {
@@ -91,6 +111,18 @@ void
 AEntity::setTeam(int team)
 {
 	_team = team;
+}
+
+void
+AEntity::setAcc(int acc)
+{
+	_acc = acc;
+}
+
+void
+AEntity::setState(int state)
+{
+	_state = state;
 }
 
 void

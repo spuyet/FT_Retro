@@ -14,6 +14,7 @@ public:
 
 	int		getAttr() const;
 	int		getCh() const;
+	void	ai(Game* game, Ship* player);
 
 	~Ship();
 

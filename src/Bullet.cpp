@@ -42,6 +42,13 @@ Bullet::getCh() const
 	return '-';
 }
 
+void
+Bullet::ai(Game* game, Ship* player)
+{
+	(void)game;
+	(void)player;
+}
+
 Bullet::~Bullet()
 {
 

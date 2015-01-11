@@ -5,10 +5,11 @@ ShipData::ShipData()
 
 }
 
-ShipData::ShipData(int ch, int attr, float speed)
+ShipData::ShipData(int ch, int attr, float speed, ai::func ai)
 : ch(ch)
 , attr(attr)
-, speed(speed) 
+, speed(speed)
+, ai(ai)
 {
 
 }
@@ -17,6 +18,7 @@ ShipData::ShipData(const ShipData& s)
 : ch(s.ch)
 , attr(s.attr)
 , speed(s.speed)
+, ai(s.ai)
 {
 
 }
@@ -27,6 +29,7 @@ ShipData::operator=(const ShipData& s)
 	ch = s.ch;
 	attr = s.attr;
 	speed = s.speed;
+	ai = s.ai;
 	return *this;
 }
 

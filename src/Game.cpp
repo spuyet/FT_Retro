@@ -119,7 +119,7 @@ void
 Game::spawnFoe()
 {
 	AEntity* foe = new Ship(1, WIDTH - 1, std::rand() % HEIGHT);
-	foe->setSpeed(-1.0f, 0.0f);
+	foe->setSpeed(-0.3f, 0.0f);
 	spawn(foe);
 }
 
@@ -151,6 +151,7 @@ Game::update()
 			bool alive = true;
 
 			_entities[i]->update();
+			_entities[i]->ai(this, &_player);
 			for (int j = i + 1; j < MAX_ENT; j++)
 			{
 				if (!_entities[j])

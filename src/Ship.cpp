@@ -44,12 +44,18 @@ Ship::getCh() const
 	return _ships[_index].ch;
 }
 
+void
+Ship::ai(Game* game, Ship* player)
+{
+	_ships[_index].ai(game, player, this);
+}
+
 Ship::~Ship()
 {
 
 }
 
 ShipData	Ship::_ships[2] = {
-	ShipData('>', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 1.0f),
-	ShipData('<', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 1.0f)
+	ShipData('>', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 1.0f, 0),
+	ShipData('<', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 1.0f, ai::dumbShip)
 };
