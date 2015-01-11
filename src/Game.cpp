@@ -219,7 +219,7 @@ Game::update()
 	{
 		_difficulty++;
 		_timer = 800 * _difficulty;
-		if (_difficulty % 1 == 0)
+		if (_difficulty % 4 == 0)
 			_boss = WAITING;
 	}
 	wave();
