@@ -14,6 +14,8 @@ public:
 	void	render() const;
 	void	action();
 	void	setHighScore(long long score);
+	void	readScore();
+	void	saveScore() const;
 
 	~MainMenu();
 

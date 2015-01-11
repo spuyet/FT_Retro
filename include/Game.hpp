@@ -4,7 +4,7 @@
 #define WIDTH	(120)
 #define	HEIGHT	(30)
 
-#define MAX_ENT	(512)
+#define MAX_ENT	(2048)
 
 #include "IGameState.hpp"
 #include "Ship.hpp"
@@ -51,6 +51,11 @@ private:
 	int			_acc;
 	int			_ultra;
 	int			_ultraDuration;
+	int			_lives;
+	int			_spawnDuration;
+	int			_kills;
+	int			_mul;
+	int			_timeElapsed;
 };
 
 #endif

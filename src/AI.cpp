@@ -118,11 +118,11 @@ ai::lord(Game* game, Ship* player, AEntity* me)
 		}
 		me->setSpeed(0, 0);
 		int acc = me->getAcc() + 1;
-		if (acc >= 64)
+		if (acc >= 256)
 			acc = 0;
 		me->setAcc(acc);
 		AEntity* bullet = new Bullet(2, me->getX(), me->getY());
-		float a = (M_PI * acc / 32.0f);
+		float a = (M_PI * acc / 128.0f);
 		bullet->setSpeed(std::cos(a), std::sin(a));
 		game->spawn(bullet);
 	}

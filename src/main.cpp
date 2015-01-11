@@ -6,10 +6,13 @@
 int
 main()
 {
-	Core	core;
+	Core		core;
+	MainMenu*	menu;
 
 	std::srand(std::time(0));
-	core.switchState(new MainMenu);
+	menu = new MainMenu();
+	menu->readScore();
+	core.switchState(menu);
 	core.run();
 	return 0;
 }

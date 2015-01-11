@@ -19,6 +19,11 @@ Game::Game()
 , _acc(0)
 , _ultra(3000)
 , _ultraDuration(0)
+, _lives(2)
+, _spawnDuration(0)
+, _kills(0)
+, _mul(1)
+, _timeElapsed(0)
 {
 	_player.setTeam(1);
 	for (int i = 0; i < MAX_ENT; i++)
@@ -58,7 +63,7 @@ Game::handleEvent(int ch)
 void
 Game::move(int x, int y)
 {
-	if (_mvCooldown > (y ? 0 : 2) || _over || _ultraDuration)
+	if (_mvCooldown > (y ? 0 : 2) || _over || _ultraDuration || _spawnDuration > 4 * 60)
 		return;
 	_mvCooldown = 4;
 	int nx = _player.getX() + x;
@@ -71,7 +76,7 @@ Game::move(int x, int y)
 void
 Game::shoot()
 {
-	if (_shootCooldown || _over || _ultraDuration)
+	if (_shootCooldown || _over || _ultraDuration || _spawnDuration)
 		return;
 	_shootCooldown = 6;
 	AEntity* bullet = spawn(new Bullet(0, _player.getX(), _player.getY()));
@@ -85,7 +90,7 @@ Game::shoot()
 void
 Game::ultra()
 {
-	if (_ultra < 3000 || _over)
+	if (_ultra < 3000 || _over || _spawnDuration)
 		return ;
 	_ultra = 0;
 	_ultraDuration = 180;
@@ -109,7 +114,18 @@ Game::spawn(AEntity* entity)
 void
 Game::destroy(int i)
 {
-	_score += _entities[i]->getScore();
+	int oldScore = _score;
+	int points = _entities[i]->getScore();
+	_score += points * _mul;
+	if (oldScore / 5000 != _score / 5000)
+		_lives++;
+	if (points)
+		_kills++;
+	if (_kills >= 10 * _mul)
+	{
+		_kills = 0;
+		_mul++;
+	}
 	if (_score > _best)
 		_best = _score;
 	delete _entities[i];
@@ -119,7 +135,20 @@ Game::destroy(int i)
 void
 Game::gameOver()
 {
-	_over = true;
+	if (_spawnDuration)
+		return ;
+	_ultraDuration = 0;
+	if (_lives)
+	{
+		_lives--;
+		_spawnDuration = 5 * 60;
+		_player.setPos(WIDTH / 8, HEIGHT / 2);
+		_mul = 1;
+		_kills = 0;
+		_ultra = 3000;
+	}
+	else
+		_over = true;
 }
 
 void
@@ -130,10 +159,10 @@ Game::wave()
 		_nextWave--;
 		return;
 	}
-	int nbSpawn = 1 + std::rand() % 4;
+	int nbSpawn = 1 + std::rand() % 3 + std::rand() % 3;
 	while (nbSpawn--)
 		spawnFoe();
-	_nextWave = (60 + std::rand() % 120) / (_difficulty * 0.5f);
+	_nextWave = (120 + std::rand() % 140) / (_difficulty * 0.4f);
 }
 
 void
@@ -152,10 +181,13 @@ Game::update()
 		_acc++;
 		return;
 	}
+	_timeElapsed++;
 	if (_ultra < 3000 && _ultraDuration == 0)
 		_ultra++;
 	if (_ultraDuration)
 		_ultraDuration--;
+	if (_spawnDuration)
+		_spawnDuration--;
 	if (_timer)
 		_timer--;
 	else
@@ -174,8 +206,8 @@ Game::update()
 		if (!_entities[i])
 			continue;
 		if (_ultraDuration && _entities[i]->getX() > _player.getX()
-			&& _entities[i]->getY() > _player.getY() - 1
-			&& _entities[i]->getY() < _player.getY() + 1)
+			&& _entities[i]->getY() >= _player.getY() - 1
+			&& _entities[i]->getY() <= _player.getY() + 1)
 		{
 			destroy(i);
 			continue;
@@ -230,25 +262,15 @@ Game::render() const
 	const int x = COLS / 2 - (WIDTH + 4) / 2;
 	const int y = LINES / 2 - (HEIGHT + 2) / 2;
 	attrset(COLOR_P(0, COLOR_WHITE));
-	::move(y, x);
-	hline(' ', WIDTH + 4);
-	vline(' ', HEIGHT + 2);
-	::move(y, x + 1);
-	vline(' ', HEIGHT + 2);
-	::move(y + HEIGHT + 1, x);
-	hline(' ', WIDTH + 4);
-	::move(y, WIDTH + 2 + x);
-	vline(' ', HEIGHT + 2);
-	::move(y, WIDTH + 3 + x);
-	vline(' ', HEIGHT + 2);
 	for (int i = 0; i < MAX_ENT; i++)
 	{
 		if (_entities[i])
 			_entities[i]->render(x, y);
 	}
-	if (!_over)
+	if (!_over && _spawnDuration <= 4 * 60 && (~_spawnDuration & (1 << 5)
+		|| _spawnDuration == 0))
 		_player.render(x, y);
-	else
+	else if (_over)
 	{
 		attrset(COLOR_P(COLOR_RED, 0) | A_BOLD);
 		const char* str = "GAME OVER";
@@ -260,14 +282,26 @@ Game::render() const
 	printw("SCORE %08lld", _score);
 	::move(y + HEIGHT + 3, x);
 	printw("BEST  %08lld", _best);
+	if (_mul > 1)
+	{
+		attrset(A_BOLD | COLOR_P(0, 0));
+		::move(y + HEIGHT + 2, x + 15);
+		printw("x%d", _mul);
+	}
 	attrset(COLOR_P(COLOR_WHITE, 0) | A_BOLD);
 	::move(y + HEIGHT + 2, x + 20);
 	printw("LEVEL %2d", _difficulty);
 	::move(y + HEIGHT + 3, x + 20);
 	int s = std::ceil(_timer / 60.0f);
 	printw("NEXT IN %02d:%02d", s / 60, s % 60);
-	::move(y + HEIGHT + 2, x + WIDTH - 6);
-	printw("ULTRA %3d%%", _ultra * 100 / 3000);
+	::move(y + HEIGHT + 2, x + WIDTH - 24);
+	addstr("ULTRA |                    |");
+	::move(y + HEIGHT + 3, x + WIDTH - 6);
+	printw("LIVES %4d", _lives);
+	attrset(COLOR_P(0, COLOR_CYAN));
+	::move(y + HEIGHT + 2, x + WIDTH - 17);
+	hline(' ', _ultra * 20 / 3000);
+
 	if (_ultraDuration)
 	{
 		::move(y + _player.getY() + 1, x + _player.getX() + 3);
@@ -287,6 +321,23 @@ Game::render() const
 		if (_acc & (1 << 5))
 			addstr(str);
 	}
+
+	attrset(COLOR_P(0, COLOR_WHITE));
+	::move(y, x);
+	hline(' ', WIDTH + 4);
+	vline(' ', HEIGHT + 2);
+	::move(y, x + 1);
+	vline(' ', HEIGHT + 2);
+	::move(y + HEIGHT + 1, x);
+	hline(' ', WIDTH + 4);
+	::move(y, WIDTH + 2 + x);
+	vline(' ', HEIGHT + 2);
+	::move(y, WIDTH + 3 + x);
+	vline(' ', HEIGHT + 2);
+
+	attron(A_BOLD);
+	::move(y + HEIGHT + 1, x + WIDTH / 2 - 2);
+	printw("%02d:%02d", _timeElapsed / 3600, _timeElapsed / 60);
 }
 
 void

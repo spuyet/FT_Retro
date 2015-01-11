@@ -1,5 +1,6 @@
 #include <cstring>
 #include <ncurses.h>
+#include <fstream>
 #include "MainMenu.hpp"
 #include "Game.hpp"
 #include "Core.hpp"
@@ -108,6 +109,21 @@ void
 MainMenu::setHighScore(long long highScore)
 {
 	_highScore = highScore;
+	saveScore();
+}
+
+void
+MainMenu::readScore()
+{
+	std::ifstream f("ft_retro.sav");
+	f >> _highScore;
+}
+
+void
+MainMenu::saveScore() const
+{
+	std::ofstream f("ft_retro.sav");
+	f << _highScore;
 }
 
 MainMenu::~MainMenu()
