@@ -24,6 +24,8 @@ Game::Game()
 , _kills(0)
 , _mul(1)
 , _timeElapsed(0)
+, _boss(CLEAR)
+, _bossLife(0)
 {
 	_player.setTeam(1);
 	for (int i = 0; i < MAX_ENT; i++)
@@ -54,6 +56,7 @@ Game::handleEvent(int ch)
 		case ' ':
 			shoot();
 			break;
+		case 'x':
 		case 'u':
 			ultra();
 			break ;
@@ -116,16 +119,31 @@ Game::destroy(int i)
 {
 	int oldScore = _score;
 	int points = _entities[i]->getScore();
-	_score += points * _mul;
-	if (oldScore / 5000 != _score / 5000)
-		_lives++;
 	if (points)
+	{
+		if (_boss == SPAWNED)
+		{
+			_bossLife--;
+			if (_bossLife)
+				return;
+			_boss = CLEAR;
+			for (int i = 0; i < MAX_ENT; i++)
+			{
+				delete _entities[i];
+				_entities[i] = 0;
+			}
+			return;
+		}
 		_kills++;
+	}
 	if (_kills >= 10 * _mul)
 	{
 		_kills = 0;
 		_mul++;
 	}
+	_score += points * _mul;
+	if (oldScore / 5000 != _score / 5000)
+		_lives++;
 	if (_score > _best)
 		_best = _score;
 	delete _entities[i];
@@ -154,6 +172,8 @@ Game::gameOver()
 void
 Game::wave()
 {
+	if (_boss)
+		return;
 	if (_nextWave > 0)
 	{
 		_nextWave--;
@@ -181,6 +201,8 @@ Game::update()
 		_acc++;
 		return;
 	}
+	if (_boss == WAITING && canBossSpawn())
+		spawnBoss();
 	_timeElapsed++;
 	if (_ultra < 3000 && _ultraDuration == 0)
 		_ultra++;
@@ -189,11 +211,16 @@ Game::update()
 	if (_spawnDuration)
 		_spawnDuration--;
 	if (_timer)
-		_timer--;
+	{
+		if (!_boss)
+			_timer--;
+	}
 	else
 	{
 		_difficulty++;
 		_timer = 800 * _difficulty;
+		if (_difficulty % 1 == 0)
+			_boss = WAITING;
 	}
 	wave();
 	_player.update();
@@ -209,7 +236,8 @@ Game::update()
 			&& _entities[i]->getY() >= _player.getY() - 1
 			&& _entities[i]->getY() <= _player.getY() + 1)
 		{
-			destroy(i);
+			if (_boss != SPAWNED || _entities[i]->getScore() == 0 || _timeElapsed % 20 == 0)
+				destroy(i);
 			continue;
 		}
 		if (_player.getTeam() != _entities[i]->getTeam()
@@ -293,7 +321,10 @@ Game::render() const
 	printw("LEVEL %2d", _difficulty);
 	::move(y + HEIGHT + 3, x + 20);
 	int s = std::ceil(_timer / 60.0f);
-	printw("NEXT IN %02d:%02d", s / 60, s % 60);
+	if (!_boss)
+		printw("NEXT IN %02d:%02d", s / 60, s % 60);
+	else
+		addstr("NEXT IN --:--");
 	::move(y + HEIGHT + 2, x + WIDTH - 24);
 	addstr("ULTRA |                    |");
 	::move(y + HEIGHT + 3, x + WIDTH - 6);
@@ -337,7 +368,22 @@ Game::render() const
 
 	attron(A_BOLD);
 	::move(y + HEIGHT + 1, x + WIDTH / 2 - 2);
-	printw("%02d:%02d", _timeElapsed / 3600, _timeElapsed / 60);
+	printw("%02d:%02d", _timeElapsed / 3600, (_timeElapsed / 60) % 60);
+
+	if (_boss == SPAWNED)
+	{
+		const char* str1 = "BOSS";
+		const char* str2 = "|                                        |";
+
+		attrset(COLOR_P(COLOR_WHITE, 0) | A_BOLD);
+		::move(y + HEIGHT + 2, x + WIDTH / 2 - std::strlen(str1) / 2);
+		addstr(str1);
+		::move(y + HEIGHT + 3, x + WIDTH / 2 - std::strlen(str2) / 2);
+		addstr(str2);
+		attrset(COLOR_P(0, COLOR_RED));
+		::move(y + HEIGHT + 3, x + WIDTH / 2 - std::strlen(str2) / 2 + 1);
+		hline(' ', _bossLife * 40 / (_difficulty * 15));
+	}
 }
 
 void
@@ -353,6 +399,27 @@ Game::goToMenu()
 
 	menu->setHighScore(_best);
 	Core::get().switchState(menu);
+}
+
+bool
+Game::canBossSpawn() const
+{
+	for (size_t i = 0; i < MAX_ENT; i++)
+	{
+		if (_entities[i] && _entities[i]->getScore())
+			return false;
+	}
+	return true;
+}
+
+void
+Game::spawnBoss()
+{
+	AEntity* boss = new Ship(7, WIDTH - 30, HEIGHT / 2);
+
+	spawn(boss);
+	_boss = SPAWNED;
+	_bossLife = _difficulty * 15;
 }
 
 Game::~Game()

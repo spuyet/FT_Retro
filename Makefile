@@ -2,7 +2,7 @@
 
 CXX := g++
 
-CXXFLAGS := -c -Wall -Wextra -Werror -g3 -I include
+CXXFLAGS := -c -Wall -Wextra -Werror -O3 -I include
 
 FILES := $(shell find src -name '*.cpp')
 
@@ -18,7 +18,7 @@ $(NAME): $(OBJ)
 	$(CXX) $(OBJ) -lncurses -o $@
 
 obj/%.o: src/%.cpp
-	mkdir -p obj
+	@mkdir -p obj
 	$(CXX) $(CXXFLAGS) $< -o $@
 
 clean:

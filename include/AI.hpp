@@ -17,6 +17,9 @@ namespace ai
 	void	ghost(Game* game, Ship* player, AEntity* me);
 	void	poseidon(Game* game, Ship* player, AEntity* me);
 	void	lord(Game* game, Ship* player, AEntity* me);
+	void	boss(Game* game, Ship* player, AEntity* me);
+	void	bossShield(Game* game, Ship* player, AEntity* me);
+	void	bossBomb(Game* game, Ship* player, AEntity* me);
 }
 
 #endif

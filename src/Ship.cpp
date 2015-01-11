@@ -74,7 +74,7 @@ Ship::pickShip()
 		if (r <= k)
 			return i;
 	}
-	return ShipData::count - 1;
+	return 1;
 }
 
 ShipData	Ship::_ships[] = {
@@ -84,5 +84,10 @@ ShipData	Ship::_ships[] = {
 	ShipData('{',          COLOR_P(COLOR_WHITE, COLOR_BLACK), 50, 30, ai::station),
 	ShipData('%', A_BOLD | COLOR_P(COLOR_MAGENTA, COLOR_BLACK), 100, 20, ai::ghost),
 	ShipData('@', A_BOLD | COLOR_P(COLOR_GREEN, COLOR_BLACK), 40, 50, ai::poseidon),
-	ShipData('&', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 300, 3, ai::lord)
+	ShipData('&', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 300, 3, ai::lord),
+	ShipData('*', A_BOLD | COLOR_P(COLOR_YELLOW, COLOR_BLACK), 2000, 0, ai::boss),
+	ShipData('&', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 0, 0, ai::lord),
+	ShipData(' ', COLOR_P(0, COLOR_MAGENTA), 0, 0, ai::bossShield),
+	ShipData('%', COLOR_P(0, COLOR_RED), 0, 0, ai::bossBomb),
+	ShipData('{', COLOR_P(0, COLOR_RED), 0, 0, ai::station)
 };

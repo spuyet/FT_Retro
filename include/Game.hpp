@@ -30,6 +30,8 @@ public:
 	void		render() const;
 	void		setBest(long long score);
 	void		goToMenu();
+	bool		canBossSpawn() const;
+	void		spawnBoss();
 
 	~Game();
 
@@ -37,6 +39,13 @@ private:
 
 	Game(const Game& rhs);
 	Game&	operator=(const Game& rhs);
+
+	enum boss_t
+	{
+		CLEAR = 0,
+		WAITING,
+		SPAWNED
+	};
 
 	Ship		_player;
 	AEntity*	_entities[MAX_ENT];
@@ -56,6 +65,8 @@ private:
 	int			_kills;
 	int			_mul;
 	int			_timeElapsed;
+	boss_t		_boss;
+	int			_bossLife;
 };
 
 #endif
