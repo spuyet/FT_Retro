@@ -5,13 +5,15 @@ ShipData::ShipData()
 
 }
 
-ShipData::ShipData(int ch, int attr, int score, ai::func ai)
+ShipData::ShipData(int ch, int attr, int score, int proba, ai::func ai)
 : ch(ch)
 , attr(attr)
 , score(score)
+, proba(proba)
 , ai(ai)
 {
-
+	sumOfProba += proba;
+	count++;
 }
 
 ShipData::ShipData(const ShipData& s)
@@ -37,3 +39,6 @@ ShipData::~ShipData()
 {
 
 }
+
+int	ShipData::sumOfProba = 0;
+int ShipData::count = 0;

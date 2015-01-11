@@ -1,6 +1,7 @@
 #include <ncurses.h>
 #include <cstring>
 #include <cstdlib>
+#include <cmath>
 #include "Game.hpp"
 #include "MainMenu.hpp"
 #include "Bullet.hpp"
@@ -11,7 +12,8 @@ Game::Game()
 , _mvCooldown(0)
 , _shootCooldown(0)
 , _over(false)
-, _difficulty(1)
+, _difficulty(0)
+, _timer(0)
 , _nextWave(60)
 , _score(0)
 , _acc(0)
@@ -51,7 +53,7 @@ Game::handleEvent(int ch)
 void
 Game::move(int x, int y)
 {
-	if (_mvCooldown || _over)
+	if (_mvCooldown > (y ? 0 : 2) || _over)
 		return;
 	_mvCooldown = 4;
 	int nx = _player.getX() + x;
@@ -67,7 +69,7 @@ Game::shoot()
 	if (_shootCooldown || _over)
 		return;
 	_shootCooldown = 6;
-	AEntity* bullet = spawn(new Bullet(_player.getX(), _player.getY()));
+	AEntity* bullet = spawn(new Bullet(0, _player.getX(), _player.getY()));
 	if (bullet)
 	{
 		bullet->setSpeed(0.99f, 0.0f);
@@ -123,7 +125,7 @@ Game::wave()
 void
 Game::spawnFoe()
 {
-	AEntity* foe = new Ship(1, WIDTH - 1, std::rand() % HEIGHT);
+	AEntity* foe = new Ship(Ship::pickShip(), WIDTH - 1, std::rand() % HEIGHT);
 	foe->setSpeed(-0.3f, 0.0f);
 	spawn(foe);
 }
@@ -131,13 +133,17 @@ Game::spawnFoe()
 void
 Game::update()
 {
-	_acc++;
 	if (_over)
-		return;
-	if (_acc >= 200)
 	{
-		_acc = 0;
+		_acc++;
+		return;
+	}
+	if (_timer)
+		_timer--;
+	else
+	{
 		_difficulty++;
+		_timer = 800 * _difficulty;
 	}
 	wave();
 	_player.update();
@@ -227,6 +233,12 @@ Game::render() const
 	printw("SCORE %08lld", _score);
 	::move(y + HEIGHT + 3, x);
 	printw("BEST  %08lld", _best);
+	attrset(COLOR_P(COLOR_WHITE, 0) | A_BOLD);
+	::move(y + HEIGHT + 2, x + 20);
+	printw("LEVEL %2d", _difficulty);
+	::move(y + HEIGHT + 3, x + 20);
+	int s = std::ceil(_timer / 60.0f);
+	printw("NEXT IN %02d:%02d", s / 60, s % 60);
 	if (_over && _best == _score && _best)
 	{
 		const char* str = "NEW  HIGHSCORE!";

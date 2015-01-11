@@ -2,14 +2,13 @@
 #define BULLET_H
 
 #include "AEntity.hpp"
+#include "BulletData.hpp"
 
 class Bullet : public AEntity
 {
-
 public:
-
 	Bullet();
-	Bullet(float x, float y);
+	Bullet(int index, float x, float y);
 	Bullet(const Bullet& rhs);
 	Bullet& operator=(const Bullet& rhs);
 
@@ -19,7 +18,9 @@ public:
 
 	~Bullet();
 
-
+private:
+	int					_index;
+	static BulletData	_bullets[];
 };
 
 #endif

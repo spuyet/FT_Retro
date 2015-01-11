@@ -19,10 +19,12 @@ public:
 
 	~Ship();
 
+	static int	pickShip();
+
 private:
 
 	int					_index;
-	static ShipData		_ships[2];
+	static ShipData		_ships[];
 
 };
 

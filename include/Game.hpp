@@ -43,6 +43,7 @@ private:
 	int			_shootCooldown;
 	bool		_over;
 	int			_difficulty;
+	int			_timer;
 	int			_nextWave;
 	long long	_score;
 	long long	_best;

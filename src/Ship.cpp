@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <cstdlib>
 #include "Ship.hpp"
 #include "Core.hpp"
 
@@ -61,7 +62,27 @@ Ship::~Ship()
 
 }
 
-ShipData	Ship::_ships[2] = {
-	ShipData('>', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 0, 0),
-	ShipData('<', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 25, ai::dumbShip)
+int
+Ship::pickShip()
+{
+	int r = std::rand() % ShipData::sumOfProba + 1;
+	int k = 0;
+
+	for (int i = 0; i < ShipData::count; i++)
+	{
+		k += _ships[i].proba;
+		if (r <= k)
+			return i;
+	}
+	return ShipData::count - 1;
+}
+
+ShipData	Ship::_ships[] = {
+	ShipData('>', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 0, 0, 0),
+	ShipData('<', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 25, 200, ai::dumbShip),
+	ShipData('O', A_BOLD | COLOR_P(COLOR_BLACK, COLOR_BLACK), 0, 10, ai::asteroid),
+	ShipData('{',          COLOR_P(COLOR_WHITE, COLOR_BLACK), 50, 20, ai::station),
+	ShipData('%', A_BOLD | COLOR_P(COLOR_MAGENTA, COLOR_BLACK), 100, 10, ai::ghost),
+	ShipData('@', A_BOLD | COLOR_P(COLOR_GREEN, COLOR_BLACK), 40, 35, ai::poseidon),
+	ShipData('&', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 300, 5000, ai::lord)
 };

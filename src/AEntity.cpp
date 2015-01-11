@@ -55,13 +55,13 @@ AEntity::operator=(const AEntity& rhs)
 int
 AEntity::getX() const
 {
-	return roundf(_x);
+	return _x;
 }
 
 int
 AEntity::getY() const
 {
-	return roundf(_y);
+	return _y;
 }
 
 float

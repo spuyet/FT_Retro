@@ -3,12 +3,14 @@
 
 Bullet::Bullet()
 : AEntity()
+, _index(0)
 {
 
 }
 
-Bullet::Bullet(float x, float y)
+Bullet::Bullet(int index, float x, float y)
 : AEntity(x, y)
+, _index(index)
 {
 
 
@@ -16,6 +18,7 @@ Bullet::Bullet(float x, float y)
 
 Bullet::Bullet(const Bullet& rhs)
 : AEntity(rhs)
+, _index(rhs._index)
 {
 
 }
@@ -27,19 +30,20 @@ Bullet::operator=(const Bullet& rhs)
 	_y = rhs._y;
 	_speedX = rhs._speedX;
 	_speedY = rhs._speedY;
+	_index = rhs._index;
 	return *this;
 }
 
 int
 Bullet::getAttr() const
 {
-	return A_BOLD | COLOR_P(COLOR_GREEN, COLOR_BLACK);
+	return _bullets[_index].attr;
 }
 
 int
 Bullet::getCh() const
 {
-	return '-';
+	return _bullets[_index].ch;
 }
 
 void
@@ -53,3 +57,13 @@ Bullet::~Bullet()
 {
 
 }
+
+BulletData Bullet::_bullets[] = {
+	BulletData('-', A_BOLD | COLOR_P(COLOR_GREEN, 0)),
+	BulletData('-', COLOR_P(COLOR_WHITE, 0)),
+	BulletData('.', A_BOLD | COLOR_P(COLOR_CYAN, 0)),
+	BulletData('\\', COLOR_P(COLOR_WHITE, 0)),
+	BulletData('/', COLOR_P(COLOR_WHITE, 0)),
+	BulletData('(', A_BOLD | COLOR_P(COLOR_BLUE, 0)),
+	BulletData(')', A_BOLD | COLOR_P(COLOR_BLUE, 0)),
+};
