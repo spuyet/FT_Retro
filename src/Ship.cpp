@@ -62,6 +62,6 @@ Ship::~Ship()
 }
 
 ShipData	Ship::_ships[2] = {
-	ShipData('>', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 1.0f, 0, 0),
-	ShipData('<', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 1.0f, 25, ai::dumbShip)
+	ShipData('>', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 0, 0),
+	ShipData('<', A_BOLD | COLOR_P(COLOR_RED, COLOR_BLACK), 25, ai::dumbShip)
 };

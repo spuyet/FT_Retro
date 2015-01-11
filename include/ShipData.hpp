@@ -6,7 +6,7 @@
 struct ShipData
 {
 	ShipData();
-	ShipData(int ch, int attr, float speed, int score, ai::func ai);
+	ShipData(int ch, int attr, int score, ai::func ai);
 	ShipData(const ShipData&);
 
 	ShipData& operator=(const ShipData&);
@@ -15,7 +15,6 @@ struct ShipData
 
 	int			ch;
 	int			attr;
-	float		speed;
 	int			score;
 	ai::func	ai;
 };

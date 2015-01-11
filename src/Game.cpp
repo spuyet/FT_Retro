@@ -114,10 +114,10 @@ Game::wave()
 		_nextWave--;
 		return;
 	}
-	int nbSpawn = _difficulty + std::rand() % (4 + _difficulty);
+	int nbSpawn = 1 + std::rand() % 4;
 	while (nbSpawn--)
 		spawnFoe();
-	_nextWave = 60 + std::rand() % 120;
+	_nextWave = (60 + std::rand() % 120) / (_difficulty * 0.5f);
 }
 
 void
@@ -131,10 +131,13 @@ Game::spawnFoe()
 void
 Game::update()
 {
+	_acc++;
 	if (_over)
-	{
-		_acc++;
 		return;
+	if (_acc >= 200)
+	{
+		_acc = 0;
+		_difficulty++;
 	}
 	wave();
 	_player.update();
@@ -224,7 +227,7 @@ Game::render() const
 	printw("SCORE %08lld", _score);
 	::move(y + HEIGHT + 3, x);
 	printw("BEST  %08lld", _best);
-	if (_best == _score && _best)
+	if (_over && _best == _score && _best)
 	{
 		const char* str = "NEW  HIGHSCORE!";
 		::move(LINES / 2 + 1, COLS / 2 - std::strlen(str) / 2);

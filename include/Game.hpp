@@ -4,7 +4,7 @@
 #define WIDTH	(120)
 #define	HEIGHT	(30)
 
-#define MAX_ENT	(256)
+#define MAX_ENT	(512)
 
 #include "IGameState.hpp"
 #include "Ship.hpp"
