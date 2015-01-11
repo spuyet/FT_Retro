@@ -84,5 +84,5 @@ ShipData	Ship::_ships[] = {
 	ShipData('{',          COLOR_P(COLOR_WHITE, COLOR_BLACK), 50, 20, ai::station),
 	ShipData('%', A_BOLD | COLOR_P(COLOR_MAGENTA, COLOR_BLACK), 100, 10, ai::ghost),
 	ShipData('@', A_BOLD | COLOR_P(COLOR_GREEN, COLOR_BLACK), 40, 35, ai::poseidon),
-	ShipData('&', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 300, 5000, ai::lord)
+	ShipData('&', A_BOLD | COLOR_P(COLOR_WHITE, COLOR_BLACK), 300, 5, ai::lord)
 };

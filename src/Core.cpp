@@ -37,7 +37,7 @@ Core::run()
 	{
 		clock_t before = clock();	
 		int ch;
-		if (COLS < WIDTH + 4 || LINES < HEIGHT + 5)
+		if (0 && (COLS < WIDTH + 4 || LINES < HEIGHT + 5))
 		{
 			askResize();
 			continue;

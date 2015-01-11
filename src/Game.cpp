@@ -17,6 +17,8 @@ Game::Game()
 , _nextWave(60)
 , _score(0)
 , _acc(0)
+, _ultra(3000)
+, _ultraDuration(0)
 {
 	_player.setTeam(1);
 	for (int i = 0; i < MAX_ENT; i++)
@@ -47,13 +49,16 @@ Game::handleEvent(int ch)
 		case ' ':
 			shoot();
 			break;
+		case 'u':
+			ultra();
+			break ;
 	}
 }
 
 void
 Game::move(int x, int y)
 {
-	if (_mvCooldown > (y ? 0 : 2) || _over)
+	if (_mvCooldown > (y ? 0 : 2) || _over || _ultraDuration)
 		return;
 	_mvCooldown = 4;
 	int nx = _player.getX() + x;
@@ -66,7 +71,7 @@ Game::move(int x, int y)
 void
 Game::shoot()
 {
-	if (_shootCooldown || _over)
+	if (_shootCooldown || _over || _ultraDuration)
 		return;
 	_shootCooldown = 6;
 	AEntity* bullet = spawn(new Bullet(0, _player.getX(), _player.getY()));
@@ -75,6 +80,15 @@ Game::shoot()
 		bullet->setSpeed(0.99f, 0.0f);
 		bullet->setTeam(1);
 	}
+}
+
+void
+Game::ultra()
+{
+	if (_ultra < 3000 || _over)
+		return ;
+	_ultra = 0;
+	_ultraDuration = 180;
 }
 
 AEntity*
@@ -138,6 +152,10 @@ Game::update()
 		_acc++;
 		return;
 	}
+	if (_ultra < 3000 && _ultraDuration == 0)
+		_ultra++;
+	if (_ultraDuration)
+		_ultraDuration--;
 	if (_timer)
 		_timer--;
 	else
@@ -153,7 +171,16 @@ Game::update()
 		_shootCooldown--;
 	for (int i = 0; i < MAX_ENT; i++)
 	{
-		if (_entities[i] && _player.getTeam() != _entities[i]->getTeam()
+		if (!_entities[i])
+			continue;
+		if (_ultraDuration && _entities[i]->getX() > _player.getX()
+			&& _entities[i]->getY() > _player.getY() - 1
+			&& _entities[i]->getY() < _player.getY() + 1)
+		{
+			destroy(i);
+			continue;
+		}
+		if (_player.getTeam() != _entities[i]->getTeam()
 			&& _player.getX() == _entities[i]->getX()
 			&& _player.getY() == _entities[i]->getY())
 		{
@@ -239,6 +266,19 @@ Game::render() const
 	::move(y + HEIGHT + 3, x + 20);
 	int s = std::ceil(_timer / 60.0f);
 	printw("NEXT IN %02d:%02d", s / 60, s % 60);
+	::move(y + HEIGHT + 2, x + WIDTH - 6);
+	printw("ULTRA %3d%%", _ultra * 100 / 3000);
+	if (_ultraDuration)
+	{
+		::move(y + _player.getY() + 1, x + _player.getX() + 3);
+		attrset(COLOR_P(0, COLOR_WHITE));
+		hline(' ', WIDTH - _player.getX() - 1);
+		attrset(COLOR_P(0, COLOR_CYAN));
+		::move(y + _player.getY(), x + _player.getX() + 3);
+		hline(' ', WIDTH - _player.getX() - 1);
+		::move(y + _player.getY() + 2, x + _player.getX() + 3);
+		hline(' ', WIDTH - _player.getX() - 1);
+	}
 	if (_over && _best == _score && _best)
 	{
 		const char* str = "NEW  HIGHSCORE!";

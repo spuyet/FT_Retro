@@ -20,6 +20,7 @@ public:
 	void		handleEvent(int ch);
 	void		move(int x, int y);
 	void		shoot();
+	void		ultra();
 	AEntity*	spawn(AEntity* entity);
 	void		destroy(int i);
 	void		gameOver();
@@ -48,6 +49,8 @@ private:
 	long long	_score;
 	long long	_best;
 	int			_acc;
+	int			_ultra;
+	int			_ultraDuration;
 };
 
 #endif
