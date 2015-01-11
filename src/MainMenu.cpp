@@ -74,6 +74,11 @@ MainMenu::render() const
 		}
 	}
 
+	attrset(COLOR_P(COLOR_YELLOW, 0) | A_BOLD);
+
+	move(LINES - 3, COLS / 2 - 7);
+	printw("HIGHSCORE %08lld", _highScore);
+
 	attrset(COLOR_PAIR(0));
 
 	size_t max = sizeof(menu) / sizeof(menu[0]);
@@ -89,9 +94,20 @@ void
 MainMenu::action()
 {
 	if (_select == 0)
-		Core::get().switchState(new Game);
+	{
+		Game* game = new Game();
+
+		game->setBest(_highScore);
+		Core::get().switchState(game);
+	}
 	else
 		Core::get().quit();
+}
+
+void
+MainMenu::setHighScore(long long highScore)
+{
+	_highScore = highScore;
 }
 
 MainMenu::~MainMenu()

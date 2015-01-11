@@ -17,6 +17,7 @@ public:
 	void	run();
 	void	quit();
 	void	switchState(IGameState* state);
+	void	askResize();
 
 	~Core();
 

@@ -28,6 +28,7 @@ public:
 	virtual int		getAttr() const = 0;
 	virtual int		getCh() const = 0;
 	virtual void	ai(Game* game, Ship* player) = 0;
+	virtual int		getScore() const;
 	virtual void	update();
 	virtual void	render(int x, int y) const;
 

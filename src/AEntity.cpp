@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <cmath>
 #include "AEntity.hpp"
 #include "Game.hpp"
 
@@ -54,13 +55,13 @@ AEntity::operator=(const AEntity& rhs)
 int
 AEntity::getX() const
 {
-	return _x;
+	return roundf(_x);
 }
 
 int
 AEntity::getY() const
 {
-	return _y;
+	return roundf(_y);
 }
 
 float
@@ -123,6 +124,12 @@ void
 AEntity::setState(int state)
 {
 	_state = state;
+}
+
+int
+AEntity::getScore() const
+{
+	return 0;
 }
 
 void

@@ -14,7 +14,7 @@ ai::dumbShip(Game* game, Ship* player, AEntity* me)
 	{
 		acc = 80 + std::rand() % 120;
 		AEntity* bullet = new Bullet(me->getX(), me->getY());
-		bullet->setSpeed(-1.0f, 0.0f);
+		bullet->setSpeed(-0.99f, 0.0f);
 		game->spawn(bullet);
 	}
 	me->setAcc(acc);

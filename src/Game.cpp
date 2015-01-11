@@ -13,6 +13,8 @@ Game::Game()
 , _over(false)
 , _difficulty(1)
 , _nextWave(60)
+, _score(0)
+, _acc(0)
 {
 	_player.setTeam(1);
 	for (int i = 0; i < MAX_ENT; i++)
@@ -26,7 +28,7 @@ Game::handleEvent(int ch)
 	{
 		case 27:
 			if (getch() == ERR)
-				Core::get().switchState(new MainMenu);
+				goToMenu();
 			break;
 		case KEY_DOWN:
 			move(0, 1);
@@ -65,10 +67,10 @@ Game::shoot()
 	if (_shootCooldown || _over)
 		return;
 	_shootCooldown = 6;
-	AEntity* bullet = spawn(new Bullet(_player.getX() + 1, _player.getY()));
+	AEntity* bullet = spawn(new Bullet(_player.getX(), _player.getY()));
 	if (bullet)
 	{
-		bullet->setSpeed(1.0f, 0.0f);
+		bullet->setSpeed(0.99f, 0.0f);
 		bullet->setTeam(1);
 	}
 }
@@ -91,6 +93,9 @@ Game::spawn(AEntity* entity)
 void
 Game::destroy(int i)
 {
+	_score += _entities[i]->getScore();
+	if (_score > _best)
+		_best = _score;
 	delete _entities[i];
 	_entities[i] = 0;
 }
@@ -127,7 +132,10 @@ void
 Game::update()
 {
 	if (_over)
+	{
+		_acc++;
 		return;
+	}
 	wave();
 	_player.update();
 	if (_mvCooldown)
@@ -152,7 +160,7 @@ Game::update()
 
 			_entities[i]->update();
 			_entities[i]->ai(this, &_player);
-			for (int j = i + 1; j < MAX_ENT; j++)
+			for (int j = 0; j < MAX_ENT; j++)
 			{
 				if (!_entities[j])
 					continue;
@@ -211,6 +219,34 @@ Game::render() const
 		::move(LINES / 2, COLS / 2 - std::strlen(str) / 2);
 		addstr(str);
 	}
+	attrset(COLOR_P(COLOR_YELLOW, 0));
+	::move(y + HEIGHT + 2, x);
+	printw("SCORE %08lld", _score);
+	::move(y + HEIGHT + 3, x);
+	printw("BEST  %08lld", _best);
+	if (_best == _score && _best)
+	{
+		const char* str = "NEW  HIGHSCORE!";
+		::move(LINES / 2 + 1, COLS / 2 - std::strlen(str) / 2);
+		attrset(COLOR_P(COLOR_YELLOW, 0) | A_BOLD);
+		if (_acc & (1 << 5))
+			addstr(str);
+	}
+}
+
+void
+Game::setBest(long long score)
+{
+	_best = score;
+}
+
+void
+Game::goToMenu()
+{
+	MainMenu* menu = new MainMenu();
+
+	menu->setHighScore(_best);
+	Core::get().switchState(menu);
 }
 
 Game::~Game()

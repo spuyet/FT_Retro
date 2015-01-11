@@ -13,6 +13,7 @@ public:
 	void	update();
 	void	render() const;
 	void	action();
+	void	setHighScore(long long score);
 
 	~MainMenu();
 
@@ -22,7 +23,7 @@ private:
 
 	size_t		_select;
 	int			_color;
-
+	long long 	_highScore;
 };
 
 #endif

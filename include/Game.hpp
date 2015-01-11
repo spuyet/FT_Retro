@@ -27,6 +27,8 @@ public:
 	void		spawnFoe();
 	void		update();
 	void		render() const;
+	void		setBest(long long score);
+	void		goToMenu();
 
 	~Game();
 
@@ -42,6 +44,9 @@ private:
 	bool		_over;
 	int			_difficulty;
 	int			_nextWave;
+	long long	_score;
+	long long	_best;
+	int			_acc;
 };
 
 #endif

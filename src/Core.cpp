@@ -1,7 +1,9 @@
 #include <ctime>
+#include <cstring>
 #include <unistd.h>
 #include <ncurses.h>
 #include "Core.hpp"
+#include "Game.hpp"
 #include "IGameState.hpp"
 
 Core::Core()
@@ -35,6 +37,11 @@ Core::run()
 	{
 		clock_t before = clock();	
 		int ch;
+		if (COLS < WIDTH + 4 || LINES < HEIGHT + 5)
+		{
+			askResize();
+			continue;
+		}
 		while ((ch = getch()) != ERR)
 			_state->handleEvent(ch);
 		_state->update();
@@ -60,6 +67,17 @@ Core::switchState(IGameState* state)
 {
 	delete _state;
 	_state = state;
+}
+
+void
+Core::askResize()
+{
+	const char* str = "RESIZE (MOTHERFUCKER) !";
+	erase();
+	attrset(COLOR_P(COLOR_RED, 0) | A_BOLD);
+	move(LINES / 2, COLS / 2 - std::strlen(str) / 2);
+	addstr(str);
+	refresh();
 }
 
 Core::~Core()
